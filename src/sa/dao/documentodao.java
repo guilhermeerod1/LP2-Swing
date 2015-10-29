@@ -11,13 +11,15 @@ package dao;
  */
 public class documentodao {
     
-    public Documentos inserirCurso(Documentos d){
+    public Documento inserirDocumento(Documento d){
         
         int chaveGerada = 0;
         
         final String sql = "INSERT INTO documento"
-        +("id, nome, tipo, cargaHoraria, cargahorariaAC")
-        + "VALUES (seq_curso.NEXTVAL, ?, ?, ?, ?, ?)";
+        +("id, comprovanteEM, comprovanteRedidencia, cAlistMilitar, cRG, cCC, histEscolar, idAluno")
+        + "VALUES (seq_documento.NEXTVAL, ?, ?, ?, ?, ?)";
+        
+        return d;
         
     }
     
