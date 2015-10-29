@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
+package sa.dao;
+
+import sa.entidade.Curso;
 
 /**
  *
  * @author Felipe
  */
-public class cursodao {
+public class CursoDAO {
     
     public Curso inserirCurso(Curso c){
         
@@ -19,6 +21,7 @@ public class cursodao {
         +("id, nome, tipo, cargaHoraria, cargahorariaAC")
         + "VALUES (seq_curso.NEXTVAL, ?, ?, ?, ?, ?)";
         
+        return c;
          
     }
     
