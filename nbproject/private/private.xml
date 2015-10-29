@@ -3,11 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Standard/Documents/NetBeansProjects/LP2-Swing/src/sa/ui/FrmCadastroDePessoas.java</file>
-            <file>file:/C:/Users/Standard/Documents/NetBeansProjects/LP2-Swing/src/sa/ui/FrmInicial.java</file>
-            <file>file:/C:/Users/Standard/Documents/NetBeansProjects/LP2-Swing/src/sa/ui/FrmCadastroDeCursos.java</file>
-            <file>file:/C:/Users/Standard/Documents/NetBeansProjects/LP2-Swing/src/sa/ui/FrmCadastroDeAlunos.java</file>
-            <file>file:/C:/Users/Standard/Documents/NetBeansProjects/LP2-Swing/src/sa/ui/FrmVisualizarAlunos.java</file>
+            <file>file:/C:/Users/Standard/Documents/NetBeansProjects/LP2-Swing/src/sa/entidade/Pessoa.java</file>
+            <file>file:/C:/Users/Standard/Documents/NetBeansProjects/LP2-Swing/src/sa/dao/PessoaDAO.java</file>
+            <file>file:/C:/Users/Standard/Documents/NetBeansProjects/LP2-Swing/src/sa/db/BD.java</file>
         </group>
     </open-files>
 </project-private>
