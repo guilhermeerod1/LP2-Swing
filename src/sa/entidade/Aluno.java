@@ -14,6 +14,7 @@ public class Aluno {
     private int id;
     private String ra;
     private boolean ativo;
+    private Pessoa pessoa;
 
     public int getId() {
         return id;
@@ -38,7 +39,13 @@ public class Aluno {
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
-    
-    
+
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
+    }
     
 }

@@ -30,8 +30,6 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
         pnlAlunos = new javax.swing.JPanel();
         lblCurso = new javax.swing.JLabel();
         cboCurso = new javax.swing.JComboBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lstAlunos = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblDadosAlunos = new javax.swing.JTable();
         btnVoltar = new javax.swing.JButton();
@@ -43,8 +41,6 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
         pnlAlunos.setBorder(javax.swing.BorderFactory.createTitledBorder("Alunos"));
 
         lblCurso.setText("Curso:");
-
-        jScrollPane1.setViewportView(lstAlunos);
 
         tblDadosAlunos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -65,19 +61,16 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
         pnlAlunos.setLayout(pnlAlunosLayout);
         pnlAlunosLayout.setHorizontalGroup(
             pnlAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlAlunosLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAlunosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2)
                     .addGroup(pnlAlunosLayout.createSequentialGroup()
                         .addComponent(lblCurso)
                         .addGap(18, 18, 18)
                         .addComponent(cboCurso, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 317, Short.MAX_VALUE)
-                        .addComponent(btnVoltar))
-                    .addGroup(pnlAlunosLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addComponent(btnVoltar)))
                 .addContainerGap())
         );
         pnlAlunosLayout.setVerticalGroup(
@@ -89,9 +82,7 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
                     .addComponent(cboCurso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnVoltar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -153,10 +144,8 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnVoltar;
     private javax.swing.JComboBox cboCurso;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblCurso;
-    private javax.swing.JList lstAlunos;
     private javax.swing.JPanel pnlAlunos;
     private javax.swing.JTable tblDadosAlunos;
     // End of variables declaration//GEN-END:variables
