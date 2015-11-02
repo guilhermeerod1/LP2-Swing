@@ -18,8 +18,9 @@ public class CursoDAO {
         int chaveGerada = 0;
         
         final String sql = "INSERT INTO curso"
-        +("id, nome, tipo, cargaHoraria, cargahorariaAC")
-        + "VALUES (seq_curso.NEXTVAL, ?, ?, ?, ?, ?)";
+        +"(idCurso, nomeDoCurso, tipo, cargaHoraria, cargaHorariaAC, "
+        + "idCoordenador) "
+        + "VALUES (seq_curso.NEXTVAL, ?, ?, ?, ?, ?, ?)";
         
         return c;
          
