@@ -19,7 +19,7 @@ public class cursodao {
         +("id, nome, tipo, cargaHoraria, cargahorariaAC")
         + "VALUES (seq_curso.NEXTVAL, ?, ?, ?, ?, ?)";
         
-         
+         return c;
     }
     
 }
