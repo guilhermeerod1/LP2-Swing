@@ -415,8 +415,9 @@ public class FrmCadastroDePessoas extends javax.swing.JFrame {
                 
             } catch (SQLException ex) {
                 
-                JOptionPane.showMessageDialog(this, "Erro de comunicação com o Banco de Dados. Finalizar.");
-                return;
+                ex.printStackTrace();
+//                JOptionPane.showMessageDialog(this, "Erro de comunicação com o Banco de Dados. Finalizar.");
+//                return;
                 
             }
             

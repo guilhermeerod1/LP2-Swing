@@ -22,20 +22,20 @@ public class PessoaDAO {
         
         int chaveGerada = 0;
         
-        final String sql = "INSERT INTO pessoa "
-                + "(idpessoa, nome, sobrenome, datanascimento, sexo, estadocivil, "
-                + "nacionalidade, graudeinstrucao, email, rg, cpf, endereco, "
-                + "numero, bairro, cep, cidade, uf, telefonecelular, "
-                + "telefoneresidencial, telefonecomercial) "
-                + "VALUES(seq_pessoa.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-                + " ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        final String sql = "INSERT INTO pessoa " 
+                + " (idPessoa, nome, sobrenome, dataNascimento, sexo, estadoCivil, "
+                + " nacionalidade, grauDeInstrucao, email, rg, cpf, endereco, "
+                + " numero, bairro, cep, cidade, uf, telefoneCelular, "
+                + " telefoneResidencial, telefoneComercial) "
+                + " VALUES(seq_pessoa.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                + " ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
         
-        try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement ps = BD.getConnection().prepareStatement(sql, new String[] {"idPessoa"})) {
             
             ps.setString(1, p.getNome());
             ps.setString(2, p.getSobrenome());
             ps.setDate(3, p.getDataNascimento());
-            ps.setString(4, Character.toString(p.getSexo()));
+            ps.setString(4, String.valueOf(p.getSexo()));
             ps.setInt(5, p.getEstadoCivil());
             ps.setString(6, p.getNacionalidade());
             ps.setInt(7, p.getGrauDeInstrucao());
@@ -52,14 +52,18 @@ public class PessoaDAO {
             ps.setString(18, p.getTelefoneResidencial());
             ps.setString(19, p.getTelefoneComercial());
             
-            ps.execute(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.executeUpdate();
             
             try (ResultSet rs = ps.getGeneratedKeys()) {
+                
                 while(rs.next()) {
+                
                     chaveGerada = rs.getInt(1);
+                    
                 }
                 
                 p.setId(chaveGerada);
+                
             }
             
         }
@@ -76,7 +80,7 @@ public class PessoaDAO {
                 + " graudeinstrucao = ?, email = ?, rg = ?, cpf = ?,"
                 + " endereco = ?, numero = ?, bairro = ?, cep = ?, cidade = ?,"
                 + " uf = ?, telefonecelular = ?,telefoneresidencial = ?,"
-                + " telefonecomercial = ? WHERE idpessoa = ?;";
+                + " telefonecomercial = ? WHERE idpessoa = ?";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
             
@@ -109,7 +113,7 @@ public class PessoaDAO {
     
     public void deletarPessoa(Pessoa p) throws SQLException {
         
-        final String sql = "DELETE FROM pessoa WHERE idpessoa = ?;";
+        final String sql = "DELETE FROM pessoa WHERE idpessoa = ?";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
             ps.setInt(1, p.getId());
@@ -123,7 +127,7 @@ public class PessoaDAO {
         
         Pessoa temp = new Pessoa();
         
-        final String sql = "SELECT * FROM pessoa WHERE idpessoa = ?;";
+        final String sql = "SELECT * FROM pessoa WHERE idpessoa = ?";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
             
@@ -166,11 +170,11 @@ public class PessoaDAO {
         
         ArrayList<Pessoa> listaDePessoas = new ArrayList<>();
         
-        final String sql = "SELECT * FROM pessoa WHERE nome LIKE(?);";
+        final String sql = "SELECT * FROM pessoa WHERE nome LIKE(?)";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
             
-            ps.setString(1, "%" + nome + "%");
+            ps.setString(1, nome);
             
             try (ResultSet rs = ps.executeQuery()) {
                 while(rs.next()) {        
@@ -213,7 +217,7 @@ public class PessoaDAO {
         
         ArrayList<Pessoa> listaDePessoas = new ArrayList<>();
         
-        final String sql = "SELECT * FROM pessoa;";
+        final String sql = "SELECT * FROM pessoa";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
             

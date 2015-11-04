@@ -28,13 +28,13 @@ public class AlunoDAO {
         final String sql = "INSERT INTO aluno (idaluno, ra, ativo, idpessoa) "
                 + "VALUES(seq_aluno.NEXTVAL, ?, ?, ?);";
         
-        try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement ps = BD.getConnection().prepareStatement(sql, new String[] {"idAluno"})) {
 
             ps.setString(1, a.getRa());
             ps.setInt(2, (a.isAtivo() ? 1 : 0));
             ps.setInt(3, idPessoa);
             
-            ps.execute(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.executeUpdate();
             
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 while(rs.next()) {

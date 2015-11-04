@@ -502,6 +502,8 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         
         if(!checarCampos()) {
             
+            JOptionPane.showMessageDialog(this, "Preencha corretamente os campos!");
+            
         }
         else {
             
@@ -595,7 +597,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         grpHE.clearSelection();
         
         txtPessoa.setText(null);
-        limparPessoaModel();
+        limparPessoaModel();    
         
     }
     
@@ -603,7 +605,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         
         try {
             
-            listaDePessoas = pessoadao.listarPessoasPeloNome(txtPessoa.getText());
+            listaDePessoas = pessoadao.listarPessoasPeloNome("%" + txtPessoa.getText() + "%");
             
         } catch (SQLException ex) {
             
