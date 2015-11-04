@@ -69,11 +69,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Cadastrar Alunos"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCadastrarAlunosActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnCadastrarPessoas">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cadastrar Pessoas"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCadastrarPessoasActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnCadastrarCursos">
       <Properties>
