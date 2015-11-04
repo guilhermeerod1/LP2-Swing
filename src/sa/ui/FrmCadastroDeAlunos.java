@@ -5,6 +5,28 @@
  */
 package sa.ui;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import sa.dao.AlunoDAO;
+import sa.dao.Aluno_CursoDAO;
+import sa.dao.CursoDAO;
+import sa.dao.DocumentoDAO;
+import sa.dao.PessoaDAO;
+import sa.entidade.Aluno;
+import sa.entidade.Aluno_Curso;
+import sa.entidade.Curso;
+import sa.entidade.Documento;
+import sa.entidade.Pessoa;
+
 /**
  *
  * @author Standard
@@ -15,7 +37,75 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
      * Creates new form CadastroDeAlunos
      */
     public FrmCadastroDeAlunos() {
+        
+        String[] colunas = new String[] {
+            "id",
+            "nome",
+            "sobrenome",
+            "dataNascimento",
+            "sexo",
+            "estadoCivil",
+            "nacionalidade",
+            "grauDeInstrucao",
+            "email",
+            "rg",
+            "cpf",
+            "endereco",
+            "numero",
+            "bairro",
+            "cep",
+            "cidade",
+            "uf",
+            "telefoneCelular",
+            "telefoneResidencial",
+            "telefoneComercial"
+        };
+        
+        aluno = new Aluno();
+        documentos = new Documento();
+        aluno_curso = new Aluno_Curso();
+        listaDeCursos = new ArrayList<>();
+        listaDePessoas = new ArrayList<>();                
+        pessoaTableModel = new DefaultTableModel(new Object[][]{}, colunas) {
+            
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }  
+            
+        };
+        tblDadosPessoa.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                
+                if(tblDadosPessoa.getSelectedRowCount() > 1) {
+                    
+                    tblDadosPessoa.clearSelection();
+                    JOptionPane.showConfirmDialog(null, "Selecione apenas uma pessoa!");
+                    
+                }
+                else if (tblDadosPessoa.getSelectedRowCount() == 1) {
+                    
+                    lblPessoa.setText("Pessoa selecionada: " +
+                            (String)tblDadosPessoa.getModel().getValueAt(tblDadosPessoa.getSelectedRow(), 0));
+                    
+                }
+                
+            }
+        });
+        cursoComboBoxModel = new DefaultComboBoxModel();
+        alunodao = new AlunoDAO();
+        pessoadao = new PessoaDAO();
+        documentodao = new DocumentoDAO();
+        acdao = new Aluno_CursoDAO();
+        cursodao = new CursoDAO();
+        
         initComponents();
+        listarCursos();
+        atualizarCursoModel();
+        cboCurso.updateUI();
+        
     }
 
     /**
@@ -60,6 +150,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         btnPesquisar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDadosPessoa = new javax.swing.JTable();
+        lblPessoaSelecionada = new javax.swing.JLabel();
         pnlAluno = new javax.swing.JPanel();
         lblRa = new javax.swing.JLabel();
         txtRa = new javax.swing.JTextField();
@@ -218,18 +309,13 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         lblPessoa.setText("Pessoa:");
 
         btnPesquisar.setText("Pesquisar");
-
-        tblDadosPessoa.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
             }
-        ));
+        });
+
+        tblDadosPessoa.setModel(pessoaTableModel);
         jScrollPane1.setViewportView(tblDadosPessoa);
 
         javax.swing.GroupLayout pnlDadosPessoaisLayout = new javax.swing.GroupLayout(pnlDadosPessoais);
@@ -239,14 +325,17 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
             .addGroup(pnlDadosPessoaisLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlDadosPessoaisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(pnlDadosPessoaisLayout.createSequentialGroup()
-                        .addComponent(lblPessoa)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPessoa, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPesquisar)
-                        .addGap(0, 86, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                        .addGroup(pnlDadosPessoaisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlDadosPessoaisLayout.createSequentialGroup()
+                                .addComponent(lblPessoa)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtPessoa, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnPesquisar))
+                            .addComponent(lblPessoaSelecionada))
+                        .addGap(0, 86, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnlDadosPessoaisLayout.setVerticalGroup(
@@ -259,18 +348,14 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
                     .addComponent(btnPesquisar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblPessoaSelecionada)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlAluno.setBorder(javax.swing.BorderFactory.createTitledBorder("Aluno"));
 
         lblRa.setText("RA:");
-
-        txtRa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtRaActionPerformed(evt);
-            }
-        });
 
         lblAtivo.setText("Ativo:");
 
@@ -281,6 +366,8 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         rbNao.setText("Não");
 
         lblCurso.setText("Curso:");
+
+        cboCurso.setModel(cursoComboBoxModel);
 
         javax.swing.GroupLayout pnlAlunoLayout = new javax.swing.GroupLayout(pnlAluno);
         pnlAluno.setLayout(pnlAlunoLayout);
@@ -324,8 +411,18 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         );
 
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         btnConfirmar.setText("Confirmar");
+        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
         pnlPrincipal.setLayout(pnlPrincipalLayout);
@@ -378,46 +475,254 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtRaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRaActionPerformed
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        
+        pesquisarPessoas();
+        atualizarPessoaModel();
+        tblDadosPessoa.updateUI();
+        
+    }//GEN-LAST:event_btnPesquisarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmCadastroDeAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmCadastroDeAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmCadastroDeAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmCadastroDeAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        
+        limparCampos();
+        dispose();
+        
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
+        
+        if(!checarCampos()) {
+            
         }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmCadastroDeAlunos().setVisible(true);
-            }
-        });
+        else {
+            
+            confirmar();
+            
+        }
+        
+    }//GEN-LAST:event_btnConfirmarActionPerformed
+    
+    private void preencherAluno() {
+        
+        Pessoa p = new Pessoa();
+        String id = (String) tblDadosPessoa.getModel().getValueAt(tblDadosPessoa.getSelectedRow(), 0);
+        
+        p.setId(Integer.parseInt(id));
+        
+        aluno.setRa(txtRa.getText());
+        aluno.setAtivo(rbSim.isSelected());
+        aluno.setPessoa(p);
+        
     }
-
+    
+    // Usar apos alunodao gerar o id do aluno
+    private void preencherDocumentos() {
+        
+        documentos.setComprovanteEM(rbCEMEntregue.isSelected() ? 'V' : 'F');
+        documentos.setComprovanteResidencia(rbCREntregue.isSelected() ? 'V' : 'F');
+        documentos.setCopiaAlistamentoMilitar(rbCAMEntregue.isSelected() ? 'V' : 'F');
+        documentos.setCopiaCertidaoCasamento(rbCCCEntregue.isSelected() ? 'V' : 'F');
+        documentos.setCopiaRG(rbCRGEntregue.isSelected() ? 'V' : 'F');
+        documentos.setHistoricoEscolar(rbHEEntregue.isSelected() ? 'V' : 'F');
+        documentos.setIdAluno(aluno.getId());
+        
+    }
+    
+    // Usar apos alunodao gerar o id do aluno
+    private void preencherAlunoCurso() {
+        
+        Curso c = (Curso) cboCurso.getModel().getElementAt(cboCurso.getSelectedIndex());
+        
+        aluno_curso.setIdAluno(aluno.getId());
+        aluno_curso.setIdCurso(c.getIdCurso());
+        
+    }
+    
+    private void confirmar() {
+        
+        preencherAluno();
+        
+        try {
+            
+            alunodao.inserirAluno(aluno, aluno.getPessoa().getId());
+            
+        } catch (SQLException ex) {
+            
+            Logger.getLogger(FrmCadastroDeAlunos.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        
+        preencherDocumentos();
+        
+        documentodao.inserirDocumento(documentos);
+        
+        preencherAlunoCurso();
+        
+        try {
+            
+            acdao.inserirAluno_Curso(aluno_curso);
+            
+        } catch (SQLException ex) {
+            
+            Logger.getLogger(FrmCadastroDeAlunos.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        
+        limparCampos();
+        
+    }
+    
+    private void limparCampos() {
+        
+        txtRa.setText(null);        
+        grpAtivo.clearSelection();
+        cboCurso.setSelectedIndex(0);
+        
+        grpCAM.clearSelection();
+        grpCCC.clearSelection();
+        grpCEM.clearSelection();
+        grpCR.clearSelection();
+        grpCRG.clearSelection();
+        grpHE.clearSelection();
+        
+        txtPessoa.setText(null);
+        limparPessoaModel();
+        
+    }
+    
+    private void pesquisarPessoas() {
+        
+        try {
+            
+            listaDePessoas = pessoadao.listarPessoasPeloNome(txtPessoa.getText());
+            
+        } catch (SQLException ex) {
+            
+            Logger.getLogger(FrmCadastroDeAlunos.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        
+    }
+    
+    private void limparPessoaModel() {
+        
+        while(pessoaTableModel.getRowCount() > 0)
+            pessoaTableModel.removeRow(pessoaTableModel.getRowCount() - 1);
+        
+    }
+    
+    private void atualizarPessoaModel() {
+        
+        limparPessoaModel();
+        
+        for(Pessoa p : listaDePessoas) {
+            
+            String ec = "", gdi = "";
+            
+            if(p.getEstadoCivil() == 1)
+                ec = "Solteiro(a)";
+            if(p.getEstadoCivil() == 2)
+                ec = "Casado(a)";
+            if(p.getEstadoCivil() == 3)
+                ec = "Divorciado(a)";
+            if(p.getEstadoCivil() == 4)
+                ec = "Viúvo(a)";
+            
+            if(p.getGrauDeInstrucao() == 1)
+                gdi = "Ensino Fundamental";
+            if(p.getGrauDeInstrucao() == 2)
+                gdi = "Ensino Médio";
+            if(p.getGrauDeInstrucao() == 3)
+                gdi = "Ensino Superior";
+            
+            Object[] linha = new Object[] {
+                
+                Integer.toString(p.getId()),
+                p.getNome(),
+                p.getSobrenome(),
+                p.getDataNascimento().toString(),
+                Character.toString(p.getSexo()),
+                ec,
+                p.getNacionalidade(),
+                gdi,
+                p.getEmail(),
+                p.getRg(),
+                p.getCpf(),
+                p.getEndereco(),
+                Integer.toString(p.getNumero()),
+                p.getBairro(),
+                p.getCep(),
+                p.getCidade(),
+                p.getUf(),
+                p.getTelefoneCelular(),
+                p.getTelefoneResidencial(),
+                p.getTelefoneComercial()
+                    
+            };
+            
+            pessoaTableModel.addRow(linha);
+            
+        }
+        
+    }
+    
+    private void atualizarCursoModel() {
+        
+        for(Curso c : listaDeCursos)
+            cursoComboBoxModel.addElement(c);
+        
+    }
+    
+    private void listarCursos() {
+        
+        //listaDeCursos = cursodao.listarCursos();
+        
+    }
+    
+    private boolean checarCampos() {
+        
+        if(txtRa.getText() == null || txtRa.getText().equals(""))
+            return false;
+        
+        if(!rbSim.isSelected() || !rbNao.isSelected())
+            return false;
+        
+        if(!rbCAMEntregue.isSelected() || !rbCAMPendente.isSelected())
+            return false;
+        
+        if(!rbCCCEntregue.isSelected() || !rbCCCEntregue.isSelected())
+            return false;
+        
+        if(!rbCEMEntregue.isSelected() || !rbCEMPendente.isSelected())
+            return false;
+        
+        if(!rbCREntregue.isSelected() || !rbCRPendente.isSelected())
+            return false;
+        
+        if(!rbCRGEntregue.isSelected() || !rbCRGPendente.isSelected())
+            return false;
+        
+        if(!rbHEEntregue.isSelected() || !rbHEPendente.isSelected())
+            return false;
+        
+        return !(lblPessoaSelecionada.getText().equals("") || lblPessoaSelecionada.getText() == null);
+        
+    }
+    
+    private Aluno aluno;
+    private Documento documentos;
+    private Aluno_Curso aluno_curso;
+    private ArrayList<Pessoa> listaDePessoas;
+    private ArrayList<Curso> listaDeCursos;
+    private DefaultTableModel pessoaTableModel;
+    private DefaultComboBoxModel cursoComboBoxModel;
+    private AlunoDAO alunodao;
+    private PessoaDAO pessoadao;
+    private DocumentoDAO documentodao;
+    private Aluno_CursoDAO acdao;
+    private CursoDAO cursodao;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnConfirmar;
@@ -440,6 +745,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
     private javax.swing.JLabel lblCurso;
     private javax.swing.JLabel lblHistoricoEscolar;
     private javax.swing.JLabel lblPessoa;
+    private javax.swing.JLabel lblPessoaSelecionada;
     private javax.swing.JLabel lblRa;
     private javax.swing.JPanel pnlAluno;
     private javax.swing.JPanel pnlDadosPessoais;

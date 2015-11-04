@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
+package sa.dao;
+
+import sa.entidade.Documento;
 
 /**
  *
  * @author Felipe
  */
-public class documentodao {
+public class DocumentoDAO {
     
     public Documento inserirDocumento(Documento d){
         

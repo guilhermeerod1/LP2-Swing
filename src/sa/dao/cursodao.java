@@ -3,23 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
+package sa.dao;
+
+import sa.entidade.Curso;
 
 /**
  *
  * @author Felipe
  */
-public class cursodao {
+public class CursoDAO {
     
     public Curso inserirCurso(Curso c){
         
         int chaveGerada = 0;
         
         final String sql = "INSERT INTO curso"
-        +("id, nome, tipo, cargaHoraria, cargahorariaAC")
-        + "VALUES (seq_curso.NEXTVAL, ?, ?, ?, ?, ?)";
+        +"(idCurso, nomeDoCurso, tipo, cargaHoraria, cargaHorariaAC, "
+        + "idCoordenador) "
+        + "VALUES (seq_curso.NEXTVAL, ?, ?, ?, ?, ?, ?)";
         
+<<<<<<< HEAD
          return c;
+=======
+        return c;
+         
+>>>>>>> origin/master
     }
     
 }

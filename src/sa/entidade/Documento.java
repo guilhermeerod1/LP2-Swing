@@ -9,7 +9,7 @@ package sa.entidade;
  *
  * @author Felipe
  */
-public class documentos {
+public class Documento {
     
     private int idDocumento;
     private int idAluno;
