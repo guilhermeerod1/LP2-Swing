@@ -107,7 +107,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
                 }
                 else if (tblDadosPessoa.getSelectedRowCount() == 1) {
                     
-                    lblPessoa.setText("Pessoa selecionada: " +
+                    lblPessoaSelecionada.setText("Pessoa selecionada: " +
                             (String)tblDadosPessoa.getModel().getValueAt(tblDadosPessoa.getSelectedRow(), 0));
                     
                 }
@@ -484,6 +484,9 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        
+        if(lblPessoaSelecionada.getText() != null)
+            lblPessoaSelecionada.setText(null);
         
         pesquisarPessoas();
         atualizarPessoaModel();
