@@ -54,6 +54,7 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
         rbPosGraduacao = new javax.swing.JRadioButton();
         btnCancelar = new javax.swing.JButton();
         btnConfirmar = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cadastro de Cursos");
@@ -89,6 +90,13 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Limpar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlCursoLayout = new javax.swing.GroupLayout(pnlCurso);
         pnlCurso.setLayout(pnlCursoLayout);
         pnlCursoLayout.setHorizontalGroup(
@@ -114,6 +122,8 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
                                 .addComponent(rbPosGraduacao))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlCursoLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnConfirmar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancelar)))
@@ -142,7 +152,8 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(pnlCursoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar)
-                    .addComponent(btnConfirmar))
+                    .addComponent(btnConfirmar)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -178,6 +189,12 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
         confirmar();
         
     }//GEN-LAST:event_btnConfirmarActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        limparComponentes();
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
     
     private void confirmar() {
         
@@ -264,6 +281,7 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnConfirmar;
     private javax.swing.ButtonGroup grpTipo;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel lblCargaHoraria;
     private javax.swing.JLabel lblNomeDoCurso;
     private javax.swing.JLabel lblQuantidadeDeHorasAC;
