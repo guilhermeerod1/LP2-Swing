@@ -2,16 +2,16 @@ package sa.ui;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import sa.dao.CursoDAO;
+import sa.entidade.Curso;
 
 public class FrmCadastroDeCursos extends javax.swing.JFrame {
-    
-    private FrmInicial frameInicial;
     
     public FrmCadastroDeCursos(FrmInicial frmInicial) {
         
         this.frameInicial = frmInicial;
-
-        initComponents();
         
         addWindowListener(new WindowAdapter() {
         
@@ -30,6 +30,10 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
             }
             
         });
+                
+        this.curso = new Curso();
+
+        initComponents();
         
     }
 
@@ -72,8 +76,18 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
         rbPosGraduacao.setText("Pós-Graduação");
 
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         btnConfirmar.setText("Confirmar");
+        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlCursoLayout = new javax.swing.GroupLayout(pnlCurso);
         pnlCurso.setLayout(pnlCursoLayout);
@@ -152,6 +166,100 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        
+        limparComponentes();
+        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
+        
+        confirmar();
+        
+    }//GEN-LAST:event_btnConfirmarActionPerformed
+    
+    private void confirmar() {
+        
+        if(!checarComponentes()) {
+            
+            JOptionPane.showMessageDialog(this, "Preencha corretamente os dados!");
+            
+        }
+        else {
+            
+            curso = new Curso();
+            
+            curso.setNome(txtNomeDoCurso.getText());
+            curso.setTipo(rbGraduacao.isSelected() ? 1 : 2);
+            curso.setCargaHoraria(Integer.parseInt(txtCargaHoraria.getText()));
+            curso.setCargaHorariaAC(Integer.parseInt(txtQuantidadeDeHorasAC.getText()));
+            
+            CursoDAO cursoDAO = new CursoDAO();
+            
+            try {
+                
+                cursoDAO.inserirCurso(curso);
+                
+            } catch (SQLException sqle) {
+                
+                JOptionPane.showMessageDialog(this, "Erro relacionado ao Banco de Dados!\n" + sqle.getMessage());
+                
+            }
+            
+            limparComponentes();
+            
+        }
+        
+    }
+    
+    private boolean checarComponentes() {
+        
+        if(txtNomeDoCurso.getText() == null || txtNomeDoCurso.getText().equals(""))
+            return false;
+        
+        if(txtCargaHoraria.getText() == null || txtCargaHoraria.getText().equals(""))
+            return false;
+        
+        try {
+        
+            Integer.parseInt(txtCargaHoraria.getText());
+            
+        } catch(NumberFormatException nfe) {
+            
+            return false;
+            
+        }
+        
+        if(txtQuantidadeDeHorasAC.getText() == null || txtQuantidadeDeHorasAC.getText().equals(""))
+            return false;
+        
+        try {
+        
+            Integer.parseInt(txtQuantidadeDeHorasAC.getText());
+            
+        } catch(NumberFormatException nfe) {
+            
+            return false;
+            
+        }
+        
+        return !(!rbGraduacao.isSelected() && !rbPosGraduacao.isSelected());
+        
+    }
+    
+    private void limparComponentes() {
+        
+        txtNomeDoCurso.setText(null);
+        grpTipo.clearSelection();
+        txtCargaHoraria.setText(null);
+        txtQuantidadeDeHorasAC.setText(null);
+        
+    }
+    
+    private FrmInicial frameInicial;
+    private Curso curso;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnConfirmar;
