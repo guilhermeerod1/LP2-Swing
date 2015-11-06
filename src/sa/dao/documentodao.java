@@ -5,6 +5,8 @@
  */
 package sa.dao;
 
+import java.sql.PreparedStatement;
+import sa.db.BD;
 import sa.entidade.Documento;
 
 /**
@@ -23,6 +25,27 @@ public class DocumentoDAO {
         
         return d;
         
+        try(PreparedStatement ps = BD.getConnection().prepareStatement(sql)){
+            ps.setInt(1, ac.getIdDocumento());
+        }
+        
     }
     
+    public void deletarDocumento() throws SQLException{
+        final String sql = "DELETE FROM documento WHERE idDocumento=?";
+        
+        try(PreparedStatement ps=BD.getConnection().prepareStatement(sql)){
+            
+        ps.executeUpdate();
+        }
+    }
+    
+    public void atualizarDocumento() throws SQLException{
+        final String sql="UPDATE documento SET";
+        
+        try(PreparedStatement ps=BD.getConnection().prepareStatement(sql)){
+            
+        ps.executeUpdate();
+        }
+    }
 }
