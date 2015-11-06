@@ -23,9 +23,7 @@ import sa.entidade.Documento;
 import sa.entidade.Pessoa;
 
 public class FrmCadastroDeAlunos extends javax.swing.JFrame {
-    
-    private FrmInicial frameInicial;
-    
+
     public FrmCadastroDeAlunos(FrmInicial frameInicial) {
         
         this.frameInicial = frameInicial;
@@ -50,26 +48,28 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
 
         
         String[] colunas = new String[] {
-            "id",
-            "nome",
-            "sobrenome",
-            "dataNascimento",
-            "sexo",
-            "estadoCivil",
-            "nacionalidade",
-            "grauDeInstrucao",
-            "email",
-            "rg",
-            "cpf",
-            "endereco",
-            "numero",
-            "bairro",
-            "cep",
-            "cidade",
-            "uf",
-            "telefoneCelular",
-            "telefoneResidencial",
-            "telefoneComercial"
+            
+            "ID",
+            "Nome",
+            "Sobrenome",
+            "Data de Nascimento",
+            "Sexo",
+            "Estado Cívil",
+            "Nacionalidade",
+            "Grau de Instrução",
+            "Email",
+            "RG",
+            "CPF",
+            "Endereço",
+            "Número",
+            "Bairro",
+            "CEP",
+            "Cidade",
+            "UF",
+            "Telefone Celular",
+            "Telefone Residencial",
+            "Telefone Comercial"
+                
         };
         
         aluno = new Aluno();
@@ -102,7 +102,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
                 if(tblDadosPessoa.getSelectedRowCount() > 1) {
                     
                     tblDadosPessoa.clearSelection();
-                    JOptionPane.showConfirmDialog(null, "Selecione apenas uma pessoa!");
+                    JOptionPane.showMessageDialog(null, "Selecione apenas uma pessoa!");
                     
                 }
                 else if (tblDadosPessoa.getSelectedRowCount() == 1) {
@@ -115,9 +115,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
             }
         });
         
-        listarCursos();
-        atualizarCursoModel();
-        cboCurso.updateUI();
+        carregarCursos();
         
     }
 
@@ -496,8 +494,8 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         
-        limparCampos();
-        dispose();
+        limparComponentes();
+        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -529,7 +527,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         
     }
     
-    // Usar apos alunodao gerar o id do aluno
+    // Método utilizado para preencher o objeto documentos
     private void preencherDocumentos() {
         
         documentos.setComprovanteEM(rbCEMEntregue.isSelected() ? 'V' : 'F');
@@ -582,11 +580,11 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
             
         }
         
-        limparCampos();
+        limparComponentes();
         
     }
     
-    private void limparCampos() {
+    private void limparComponentes() {
         
         txtRa.setText(null);        
         grpAtivo.clearSelection();
@@ -600,15 +598,71 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         grpHE.clearSelection();
         
         txtPessoa.setText(null);
-        limparPessoaModel();    
-        
+                
     }
-    
-    private void pesquisarPessoas() {
+        
+    private void atualizarPessoaModel() {
+        
+        PessoaDAO pessoaDAO = new PessoaDAO();
+        
+        for(int i = 0; i < listaDePessoas.size(); ++i)
+            listaDePessoas.remove(i);
+        
+        for(int i = 0; i < pessoaTableModel.getRowCount(); ++i)
+            pessoaTableModel.removeRow(i);
         
         try {
             
-            listaDePessoas = pessoadao.listarPessoasPeloNome("%" + txtPessoa.getText() + "%");
+            listaDePessoas = pessoaDAO.listarPessoasPeloNome("%" + txtPessoa.getText() + "%");
+            
+            for(Pessoa p : listaDePessoas) {
+            
+                String ec = "", gdi = "";
+
+                if(p.getEstadoCivil() == 1)
+                    ec = "Solteiro(a)";
+                if(p.getEstadoCivil() == 2)
+                    ec = "Casado(a)";
+                if(p.getEstadoCivil() == 3)
+                    ec = "Divorciado(a)";
+                if(p.getEstadoCivil() == 4)
+                    ec = "Viúvo(a)";
+
+                if(p.getGrauDeInstrucao() == 1)
+                    gdi = "Ensino Fundamental";
+                if(p.getGrauDeInstrucao() == 2)
+                    gdi = "Ensino Médio";
+                if(p.getGrauDeInstrucao() == 3)
+                    gdi = "Ensino Superior";
+
+                Object[] linha = new Object[] {
+
+                    Integer.toString(p.getId()),
+                    p.getNome(),
+                    p.getSobrenome(),
+                    p.getDataNascimento().toString(),
+                    Character.toString(p.getSexo()),
+                    ec,
+                    p.getNacionalidade(),
+                    gdi,
+                    p.getEmail(),
+                    p.getRg(),
+                    p.getCpf(),
+                    p.getEndereco(),
+                    Integer.toString(p.getNumero()),
+                    p.getBairro(),
+                    p.getCep(),
+                    p.getCidade(),
+                    p.getUf(),
+                    p.getTelefoneCelular(),
+                    p.getTelefoneResidencial(),
+                    p.getTelefoneComercial()
+
+                };
+
+                pessoaTableModel.addRow(linha);
+
+            }
             
         } catch (SQLException ex) {
             
@@ -618,78 +672,24 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         
     }
     
-    private void limparPessoaModel() {
+    private void carregarCursos() {
         
-        while(pessoaTableModel.getRowCount() > 0)
-            pessoaTableModel.removeRow(pessoaTableModel.getRowCount() - 1);
+        CursoDAO cursoDAO = new CursoDAO();
         
-    }
-    
-    private void atualizarPessoaModel() {
+        try {
         
-        limparPessoaModel();
-        
-        for(Pessoa p : listaDePessoas) {
+            listaDeCursos = cursodao.listarCursos();
             
-            String ec = "", gdi = "";
+            for(Curso c : listaDeCursos)
+                cursoComboBoxModel.addElement(c);
             
-            if(p.getEstadoCivil() == 1)
-                ec = "Solteiro(a)";
-            if(p.getEstadoCivil() == 2)
-                ec = "Casado(a)";
-            if(p.getEstadoCivil() == 3)
-                ec = "Divorciado(a)";
-            if(p.getEstadoCivil() == 4)
-                ec = "Viúvo(a)";
+        } catch(SQLException sqle) {
             
-            if(p.getGrauDeInstrucao() == 1)
-                gdi = "Ensino Fundamental";
-            if(p.getGrauDeInstrucao() == 2)
-                gdi = "Ensino Médio";
-            if(p.getGrauDeInstrucao() == 3)
-                gdi = "Ensino Superior";
-            
-            Object[] linha = new Object[] {
-                
-                Integer.toString(p.getId()),
-                p.getNome(),
-                p.getSobrenome(),
-                p.getDataNascimento().toString(),
-                Character.toString(p.getSexo()),
-                ec,
-                p.getNacionalidade(),
-                gdi,
-                p.getEmail(),
-                p.getRg(),
-                p.getCpf(),
-                p.getEndereco(),
-                Integer.toString(p.getNumero()),
-                p.getBairro(),
-                p.getCep(),
-                p.getCidade(),
-                p.getUf(),
-                p.getTelefoneCelular(),
-                p.getTelefoneResidencial(),
-                p.getTelefoneComercial()
-                    
-            };
-            
-            pessoaTableModel.addRow(linha);
+            JOptionPane.showMessageDialog(this, "Erro relacionado ao Banco de Dados!\n" + sqle.getMessage());
             
         }
         
-    }
-    
-    private void atualizarCursoModel() {
-        
-        for(Curso c : listaDeCursos)
-            cursoComboBoxModel.addElement(c);
-        
-    }
-    
-    private void listarCursos() {
-        
-        //listaDeCursos = cursodao.listarCursos();
+        cboCurso.updateUI();
         
     }
     
@@ -733,13 +733,18 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         
     }
     
+    private FrmInicial frameInicial;
+    
     private Aluno aluno;
     private Documento documentos;
     private Aluno_Curso aluno_curso;
+    
     private ArrayList<Pessoa> listaDePessoas;
     private ArrayList<Curso> listaDeCursos;
+    
     private DefaultTableModel pessoaTableModel;
     private DefaultComboBoxModel cursoComboBoxModel;
+    
     private AlunoDAO alunodao;
     private PessoaDAO pessoadao;
     private DocumentoDAO documentodao;

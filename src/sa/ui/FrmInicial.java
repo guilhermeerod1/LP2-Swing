@@ -4,6 +4,7 @@ public class FrmInicial extends javax.swing.JFrame {
 
     public FrmInicial() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -35,8 +36,18 @@ public class FrmInicial extends javax.swing.JFrame {
         });
 
         btnCadastrarCursos.setText("Cadastrar Cursos");
+        btnCadastrarCursos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadastrarCursosActionPerformed(evt);
+            }
+        });
 
         btnVisualizarAlunos.setText("Visualizar Alunos");
+        btnVisualizarAlunos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVisualizarAlunosActionPerformed(evt);
+            }
+        });
 
         lblBemVindo.setText("Bem Vindo");
 
@@ -96,6 +107,22 @@ public class FrmInicial extends javax.swing.JFrame {
         frmCadastroDePessoas.setVisible(true);
         
     }//GEN-LAST:event_btnCadastrarPessoasActionPerformed
+
+    private void btnCadastrarCursosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarCursosActionPerformed
+        
+        FrmCadastroDeCursos frmCadastroDeCursos = new FrmCadastroDeCursos(this);
+        
+        frmCadastroDeCursos.setVisible(true);
+        
+    }//GEN-LAST:event_btnCadastrarCursosActionPerformed
+
+    private void btnVisualizarAlunosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVisualizarAlunosActionPerformed
+        
+        FrmVisualizarAlunos frmVisualizarAlunos = new FrmVisualizarAlunos(this);
+        
+        frmVisualizarAlunos.setVisible(true);
+        
+    }//GEN-LAST:event_btnVisualizarAlunosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrarAlunos;

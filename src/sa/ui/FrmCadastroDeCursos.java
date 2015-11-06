@@ -1,10 +1,35 @@
 package sa.ui;
 
-public class FrmCadastroDeCursos extends javax.swing.JFrame {
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-    public FrmCadastroDeCursos() {
+public class FrmCadastroDeCursos extends javax.swing.JFrame {
+    
+    private FrmInicial frameInicial;
+    
+    public FrmCadastroDeCursos(FrmInicial frmInicial) {
+        
+        this.frameInicial = frmInicial;
 
         initComponents();
+        
+        addWindowListener(new WindowAdapter() {
+        
+            @Override
+            public void windowActivated(WindowEvent we) {
+                
+               frameInicial.setEnabled(false);
+                
+            }
+
+            @Override
+            public void windowClosing(WindowEvent we) {
+                
+                frameInicial.setEnabled(true);
+                
+            }
+            
+        });
         
     }
 

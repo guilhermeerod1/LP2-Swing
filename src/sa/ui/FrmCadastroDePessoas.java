@@ -14,8 +14,6 @@ import sa.entidade.Pessoa;
 
 public class FrmCadastroDePessoas extends javax.swing.JFrame {
 
-    private final FrmInicial frameInicial;
-    
     public FrmCadastroDePessoas(FrmInicial frameInicial) {
         
         pessoa = new Pessoa();
@@ -386,42 +384,51 @@ public class FrmCadastroDePessoas extends javax.swing.JFrame {
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         
-        limparCampos();
+        limparComponentes();
         
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         
-        limparCampos();
-        dispose();
+        limparComponentes();
+        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         
+        // Se o método checarCampos retornar false
         if(!checarCampos()) {
             
-            JOptionPane.showMessageDialog(null, "Preencha os campos corretamente!");
+            // Mensagem passada ao usuário
+            JOptionPane.showMessageDialog(this, "Preencha os campos corretamente!");
             
         }
+        // Se checarCampos retornar true
         else {
             
+            // Chama o método preencherPessoa
             preencherPessoa();
+            
+            // Cria um novo pessoaDAO para acessar o Banco de Dados
             PessoaDAO pessoaDAO = new PessoaDAO();
             
             try {
                 
+                // pessoaDAO insere nova pessoa
                 pessoaDAO.inserirPessoa(pessoa);
                 
             } catch (SQLException ex) {
                 
-                ex.printStackTrace();
-//                JOptionPane.showMessageDialog(this, "Erro de comunicação com o Banco de Dados. Finalizar.");
-//                return;
+                // Se ocorrer exceção avisa usuário e sai da função
+                JOptionPane.showMessageDialog(this, "Erro relacionado ao Banco de Dados!\n" + ex.getMessage());
+                return;
                 
             }
             
-            JOptionPane.showConfirmDialog(this, "Nova pessoa adicionada com sucesso!");
+            // Se tudo ocorrer bem mostra mensagem ao usuário e limpa os componentes
+            JOptionPane.showMessageDialog(this, "Nova pessoa adicionada com sucesso!");
+            limparComponentes();
             
         }
         
@@ -488,7 +495,8 @@ public class FrmCadastroDePessoas extends javax.swing.JFrame {
         
     }
     
-    private void limparCampos() {
+    // Método responsável pela limpeza dos componentes
+    private void limparComponentes() {
         
             cboEstadoCivil.setSelectedIndex(0);
             cboGrauDeInstrucao.setSelectedIndex(0);
@@ -500,8 +508,7 @@ public class FrmCadastroDePessoas extends javax.swing.JFrame {
             ftxtTelefoneCelular.setText(null);
             ftxtTelefoneComercial.setText(null);
             ftxtTelefoneResidencial.setText(null);
-            rbFeminino.setSelected(false);
-            rbMasculino.setSelected(false);
+            grpSexo.clearSelection();
             txtBairro.setText(null);
             txtCidade.setText(null);
             txtEmail.setText(null);
@@ -513,51 +520,73 @@ public class FrmCadastroDePessoas extends javax.swing.JFrame {
         
     }
     
+    // Método responsável por preencher o objeto pessoa que será passado ao pessoaDAO
     private void preencherPessoa() {
         
-        String ec = ((String) cboEstadoCivil.getItemAt(cboEstadoCivil.getSelectedIndex()));
-        int ecn = 1;
+        // String estadoCivil rebece a string selecionada no combo de estado cívil
+        String estadoCivil = ((String) cboEstadoCivil.getItemAt(cboEstadoCivil.getSelectedIndex()));
         
-        if(ec.equals("Solteiro(a)"))
-            ecn = 1;
-        if(ec.equals("Casado(a)"))
-            ecn = 2;
-        if(ec.equals("Divorciado(a)"))
-            ecn = 3;
-        if(ec.equals("Viúvo(a)"))
-            ecn = 4;
+        // Armazena o número do estado cívil
+        int numeroEstadoCivil = 0;
         
-        String gdi = ((String) cboGrauDeInstrucao.getItemAt(cboGrauDeInstrucao.getSelectedIndex()));
-        int gdin = 1;
-        char s;
+        // Determina o número do estado cívil
+        if(estadoCivil.equals("Solteiro(a)"))
+            numeroEstadoCivil = 1;
+        if(estadoCivil.equals("Casado(a)"))
+            numeroEstadoCivil = 2;
+        if(estadoCivil.equals("Divorciado(a)"))
+            numeroEstadoCivil = 3;
+        if(estadoCivil.equals("Viúvo(a)"))
+            numeroEstadoCivil = 4;
         
+        // String grauDeInstrucao recebe a string selecionada no combo de grau de instrução
+        String grauDeInstrucao = ((String) cboGrauDeInstrucao.getItemAt(cboGrauDeInstrucao.getSelectedIndex()));
+        
+        // Armazena o número do grau de instrução
+        int numeroGrauDeInstrucao = 0;
+        
+        // Determina o grau de instrução
+        if(grauDeInstrucao.equals("Ensino Fundamental"))
+            numeroGrauDeInstrucao = 1;
+        if(grauDeInstrucao.equals("Ensino Médio"))
+            numeroGrauDeInstrucao = 2;
+        if(grauDeInstrucao.equals("Ensino Superior"))
+            numeroGrauDeInstrucao = 3;
+        
+        // Armazena o caracter do sexo
+        char sexo = '\0';
+        
+        // Determina o caracter do sexo
         if(rbMasculino.isSelected())
-            s = 'M';
+            sexo = 'M';
         else
-            s = 'F';             
-
-        if(gdi.equals("Ensino Fundamental"))
-            gdin = 1;
-        if(gdi.equals("Ensino Médio"))
-            gdin = 2;
-        if(gdi.equals("Ensino Superior"))
-            gdin = 3;
+            sexo = 'F';             
         
-        Date data = null;
+        // Armazenará a data de nascimento
+        Date dataDeNascimento = null;
+        
+        // SimpleDateFormat que converterá a string no ftxtDataDenascimento para tipo Date
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");  
         
         try {  
-            data = new Date(format.parse(ftxtDataDeNascimento.getText()).getTime());
+            
+            //dataDeNascimento é instanciada com a data convertida pelo format
+            dataDeNascimento = new Date(format.parse(ftxtDataDeNascimento.getText()).getTime());
+            
         } catch (ParseException ex) {
+            
+            // Exceção lançada se o format não conseguir converter
             Logger.getLogger(FrmCadastroDePessoas.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         
+        // Preenche os atributos do objeto pessoa
         pessoa.setNome(txtNome.getText());
         pessoa.setSobrenome(txtSobrenome.getText());
-        pessoa.setDataNascimento(data);
-        pessoa.setSexo(s);
-        pessoa.setEstadoCivil(ecn);
-        pessoa.setGrauDeInstrucao(gdin);
+        pessoa.setDataNascimento(dataDeNascimento);
+        pessoa.setSexo(sexo);
+        pessoa.setEstadoCivil(numeroEstadoCivil);
+        pessoa.setGrauDeInstrucao(numeroGrauDeInstrucao);
         pessoa.setNacionalidade(txtNacionalidade.getText());
         pessoa.setEmail(txtEmail.getText());
         pessoa.setRg(ftxtRG.getText());
@@ -574,7 +603,11 @@ public class FrmCadastroDePessoas extends javax.swing.JFrame {
         
     }
     
+    // Objeto pessoa armazenará os dados a serem enviados ao BD
     private Pessoa pessoa;
+    // Armazena o endereço do Frame a ser bloqueado
+    private final FrmInicial frameInicial;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnConfirmar;

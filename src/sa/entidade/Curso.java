@@ -75,6 +75,10 @@ public class Curso {
         this.cargaHorariaAC = cargaHorariaAC;
     }
     
-    
+    public String toString() {
+        
+        return getNome();
+        
+    }
     
 }
