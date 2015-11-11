@@ -14,7 +14,7 @@ public class Curso {
     private int idCurso;
     private int idCoordenador;
     private int idAluno;
-    private String nome;
+    private String nomeDoCurso;
     private int tipo;
     private int cargaHoraria;
     private int cargaHorariaAC;
@@ -43,12 +43,12 @@ public class Curso {
         this.idAluno = idAluno;
     }
 
-    public String getNome() {
-        return nome;
+    public String getNomeDoCurso() {
+        return nomeDoCurso;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setNomeDoCurso(String nomeDoCurso) {
+        this.nomeDoCurso = nomeDoCurso;
     }
 
     public int getTipo() {
@@ -77,7 +77,7 @@ public class Curso {
     
     public String toString() {
         
-        return getNome();
+        return getNomeDoCurso();
         
     }
     

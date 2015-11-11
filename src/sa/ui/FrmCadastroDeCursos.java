@@ -207,7 +207,7 @@ public class FrmCadastroDeCursos extends javax.swing.JFrame {
             
             curso = new Curso();
             
-            curso.setNome(txtNomeDoCurso.getText());
+            curso.setNomeDoCurso(txtNomeDoCurso.getText());
             curso.setTipo(rbGraduacao.isSelected() ? 1 : 2);
             curso.setCargaHoraria(Integer.parseInt(txtCargaHoraria.getText()));
             curso.setCargaHorariaAC(Integer.parseInt(txtQuantidadeDeHorasAC.getText()));

@@ -3,8 +3,10 @@ package sa.ui;
 public class FrmInicial extends javax.swing.JFrame {
 
     public FrmInicial() {
+        
         initComponents();
         setLocationRelativeTo(null);
+        
     }
 
     @SuppressWarnings("unchecked")

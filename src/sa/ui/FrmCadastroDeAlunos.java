@@ -566,7 +566,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         
         try {
             
-            documentoDAO.inserirDocumento(documentos);
+            documentoDAO.inserirDocumento(documentos, aluno.getId());
             
         } catch (SQLException ex) {
             
@@ -748,7 +748,7 @@ public class FrmCadastroDeAlunos extends javax.swing.JFrame {
         if(!rbCAMEntregue.isSelected() && !rbCAMPendente.isSelected())
             return false;
         
-        if(!rbCCCEntregue.isSelected() && !rbCCCEntregue.isSelected())
+        if(!rbCCCEntregue.isSelected() && !rbCCCPendente.isSelected())
             return false;
         
         if(!rbCEMEntregue.isSelected() && !rbCEMPendente.isSelected())

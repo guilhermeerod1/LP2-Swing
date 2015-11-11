@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sa.dao;
 
 import java.sql.PreparedStatement;
@@ -13,18 +8,14 @@ import sa.db.BD;
 import sa.entidade.Aluno;
 import sa.entidade.Pessoa;
 
-/**
- *
- * @author Standard
- */
 public class AlunoDAO {
     
     public Aluno inserirAluno(Aluno a, int idPessoa) throws SQLException {
         
         int chaveGerada = 0;
         
-        final String sql = "INSERT INTO aluno (idaluno, ra, ativo, idpessoa) "
-                + "VALUES(seq_aluno.NEXTVAL, ?, ?, ?);";
+        final String sql = "INSERT INTO aluno (idAluno, ra, ativo, idPessoa) "
+                + "VALUES(seq_aluno.NEXTVAL, ?, ?, ?)";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql, new String[] {"idAluno"})) {
 
@@ -35,11 +26,13 @@ public class AlunoDAO {
             ps.executeUpdate();
             
             try (ResultSet rs = ps.getGeneratedKeys()) {
+                
                 while(rs.next()) {
                     
                     chaveGerada = rs.getInt(1);
                     
                 }
+                
             }
             
         }
@@ -52,8 +45,8 @@ public class AlunoDAO {
     
     public void atualizarAluno(Aluno a, int idPessoa) throws SQLException {
         
-        final String sql = "UPDATE aluno SET ra = ?, ativo = ?, idpessoa = ? "
-                + "WHERE idaluno = ?";
+        final String sql = "UPDATE aluno SET ra = ?, ativo = ?, idPessoa = ? "
+                + "WHERE idAluno = ?";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
             
@@ -70,7 +63,7 @@ public class AlunoDAO {
     
     public void deletarAluno(Aluno a) throws SQLException {
         
-        final String sql = "DELETE FROM aluno WHERE idaluno = ?;";
+        final String sql = "DELETE FROM aluno WHERE idAluno = ?";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
             
@@ -87,13 +80,14 @@ public class AlunoDAO {
         Aluno a = new Aluno();
         int idPessoa = 0;
         
-        final String sql = "SELECT * FROM aluno WHERE idaluno = ?;";
+        final String sql = "SELECT * FROM aluno WHERE idAluno = ?";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
          
             ps.setInt(1, idAluno);
             
             try (ResultSet rs = ps.executeQuery()) {
+                
                 while(rs.next()) {
                     
                     a.setId(rs.getInt(1));
@@ -105,6 +99,7 @@ public class AlunoDAO {
                     
                     a.setPessoa(p.selecionarPessoaPeloID(idPessoa));
                 }
+                
             }
             
         }
@@ -119,11 +114,11 @@ public class AlunoDAO {
         
         final String sql = "SELECT idAluno, ra, ativo, idPessoa, "
                 + "nome, sobrenome, dataNascimento, sexo, "
-                + "estadoCivil, nacionalidade, grauDeInstrucao,"
-                + "email, rg, cpf, endereco, numero, bairro, cep"
-                + "cidade, uf, telefoneCelular, telefoneResidencial"
+                + "estadoCivil, nacionalidade, grauDeInstrucao, "
+                + "email, rg, cpf, endereco, numero, bairro, cep, "
+                + "cidade, uf, telefoneCelular, telefoneResidencial, "
                 + "telefoneComercial "
-                + "FROM v_aluno_curso WHERE idCurso = ?;";
+                + "FROM v_aluno_curso WHERE idCurso = ?";
         
         try (PreparedStatement ps = BD.getConnection().prepareStatement(sql)) {
             
@@ -163,6 +158,7 @@ public class AlunoDAO {
                     listaDeAlunos.add(a);
                     
                 }
+                
             }
             
         }

@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import sa.dao.AlunoDAO;
 import sa.dao.CursoDAO;
@@ -21,6 +23,30 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
      * @param frmInicial Frame que será bloqueado
      */
     public FrmVisualizarAlunos(FrmInicial frmInicial) {
+        
+//        tblDadosPessoa.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//
+//            @Override
+//            public void valueChanged(ListSelectionEvent lse) {
+//                
+//                if(tblDadosPessoa.getSelectedRowCount() > 1) {
+//                    
+//                    tblDadosPessoa.clearSelection();
+//                    JOptionPane.showMessageDialog(null, "Selecione apenas uma pessoa!");
+//                    
+//                }
+//                else if (tblDadosPessoa.getSelectedRowCount() == 1) {
+//                    
+//                    lblPessoaSelecionada.setText("Pessoa selecionada: " +
+//                            (String)tblDadosPessoa.getModel().getValueAt(tblDadosPessoa.getSelectedRow(), 0));
+//                    
+//                }
+//                
+//            }
+//            
+//        });
+        
+        
         
         // Colunas a serem mostradas na tabela
         String[] colunas = new String[] {
@@ -51,7 +77,15 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
         };
         
         // Inicializa alguns atributos
-        this.alunosModel = new DefaultTableModel(new Object[][]{}, colunas);
+        this.alunosModel = new DefaultTableModel(new Object[][]{}, colunas) {
+            
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }  
+                       
+        };
+        
         this.cursoModel = new DefaultComboBoxModel<>();
         this.frameInicial = frmInicial;
         
@@ -59,6 +93,7 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
         
         // Preenche o combo de cursos
         preencherCursos();
+        preencherAlunos();
         
         // Adiciona listener que bloqueará e desbloqueará o frame recebido como 
         // parametro no construtor em certos eventos 
@@ -102,9 +137,12 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
         pnlAlunos = new javax.swing.JPanel();
         lblCurso = new javax.swing.JLabel();
         cboCurso = new javax.swing.JComboBox();
+        btnVoltar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblDadosAlunos = new javax.swing.JTable();
-        btnVoltar = new javax.swing.JButton();
+        lblEditar = new javax.swing.JButton();
+        lblExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Visualizar Alunos por Curso");
@@ -116,15 +154,24 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
 
         cboCurso.setModel(cursoModel);
 
-        tblDadosAlunos.setModel(alunosModel);
-        jScrollPane2.setViewportView(tblDadosAlunos);
-
         btnVoltar.setText("Voltar");
         btnVoltar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVoltarActionPerformed(evt);
             }
         });
+
+        tblDadosAlunos.setModel(alunosModel);
+        tblDadosAlunos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tblDadosAlunos.getTableHeader().setResizingAllowed(false);
+        tblDadosAlunos.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tblDadosAlunos);
+
+        jScrollPane1.setViewportView(jScrollPane2);
+
+        lblEditar.setText("Editar");
+
+        lblExcluir.setText("Excluir");
 
         javax.swing.GroupLayout pnlAlunosLayout = new javax.swing.GroupLayout(pnlAlunos);
         pnlAlunos.setLayout(pnlAlunosLayout);
@@ -133,12 +180,16 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAlunosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
                     .addGroup(pnlAlunosLayout.createSequentialGroup()
                         .addComponent(lblCurso)
                         .addGap(18, 18, 18)
                         .addComponent(cboCurso, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 317, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblExcluir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblEditar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnVoltar)))
                 .addContainerGap())
         );
@@ -149,9 +200,11 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
                 .addGroup(pnlAlunosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCurso)
                     .addComponent(cboCurso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnVoltar))
+                    .addComponent(btnVoltar)
+                    .addComponent(lblEditar)
+                    .addComponent(lblExcluir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -190,8 +243,13 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
         AlunoDAO alunoDAO = new AlunoDAO();
         
         // Remove os alunos já existentes da lista
-        for(int i = 0; i < listaDeAlunos.size(); ++i)
-            listaDeAlunos.remove(i);
+        
+        if(listaDeAlunos != null) {
+            
+            for(int i = 0; i < listaDeAlunos.size(); ++i)
+                listaDeAlunos.remove(i);
+            
+        }
         
         // Remove as linhas do model da tebela
         for(int i = 0; i < alunosModel.getRowCount(); ++i)
@@ -333,8 +391,11 @@ public class FrmVisualizarAlunos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnVoltar;
     private javax.swing.JComboBox cboCurso;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblCurso;
+    private javax.swing.JButton lblEditar;
+    private javax.swing.JButton lblExcluir;
     private javax.swing.JPanel pnlAlunos;
     private javax.swing.JTable tblDadosAlunos;
     // End of variables declaration//GEN-END:variables
